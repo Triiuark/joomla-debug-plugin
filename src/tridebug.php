@@ -28,7 +28,7 @@ class PlgSystemTriDebug extends JPlugin
 
 		$file = '/tmp/tridebug_'.str_replace('/', '_', JPATH_BASE);
 		if (!is_file($file)) {
-			error_log('TO ENABLE DEBUG PLUGIN: touch '.$file);
+			//error_log('TO ENABLE DEBUG PLUGIN: touch '.$file);
 			self::$isEnabled = false;
 			return;
 		}
