@@ -59,6 +59,9 @@ class PlgSystemTriDebug extends JPlugin
 		if (!self::$isEnabled) {
 			return;
 		}
+		if (sizeof($this->errors) == 0 && sizeof(self::$dumps) == 0) {
+			return;
+		}
 		$contents = ob_get_contents();
 
 		if ($contents) {
