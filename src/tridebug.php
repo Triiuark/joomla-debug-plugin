@@ -80,7 +80,7 @@ class PlgSystemTriDebug extends JPlugin
 							continue;
 						}
 
-						$args   = sizeof($args) ? preg_replace('/^\n/', '', preg_replace('/\n\)$/', '', str_replace("Array\n(", '', print_r($fn['args'], 1)))) : '';
+						$args   = sizeof($fn['args']) ? preg_replace('/^\n/', '', preg_replace('/\n\)$/', '', str_replace("Array\n(", '', print_r($fn['args'], 1)))) : '';
 
 	//					$js[]   = '   console.log("PHP: '.$fn->code.': '.$fn->msg.'\n     '.$fn->file.' on line '.$fn->line.'");';
 						$html[] = '   <div class="trace">';
