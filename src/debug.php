@@ -9,11 +9,12 @@ class D
 	private static $instance = null;
 
 	private $enabled;
-	private $level;       // E_ALL  - error level to display
-	private $printTraces; // true   - print traces
-	private $settings;    // object - to store original errror handling settings
-	private $oneTmpFile;  // false  - keep all other requests in one file or in a file for each client
-	private $path;        // ''     - path to strip from file names
+	private $level;           // E_ALL  - error level to display
+	private $printSuppressed; // false - do not print suppressed errors
+	private $printTraces;     // true   - print traces
+	private $settings;        // object - to store original errror handling settings
+	private $oneTmpFile;      // false  - keep all other requests in one file or in a file for each client
+	private $path;            // ''     - path to strip from file names
 	private $errors;
 	private $dumps;
 
@@ -88,6 +89,10 @@ class D
 			return;
 		}
 
+		if (!$this->printSuppressed && error_reporting() === 0) {
+			// happens if errors suppressed with @
+			return;
+		}
 		$file = preg_replace('#^'.$this->path.'#', '', $file);
 
 		$error = (object)[
@@ -355,12 +360,13 @@ class D
 			}
 		}
 
-		$this->settings    = new \stdClass;
-		$this->oneTmpFile  = false;
-		$this->printTraces = true;
-		$this->level       = E_ALL;
-		$this->errors      = [];
-		$this->dumps       = [];
+		$this->settings        = new \stdClass;
+		$this->oneTmpFile      = false;
+		$this->printSuppressed = false;
+		$this->printTraces     = true;
+		$this->level           = E_ALL;
+		$this->errors          = [];
+		$this->dumps           = [];
 
 		$this->settings->display_errors = ini_set('display_errors', '1');
 		$this->settings->level          = error_reporting($this->level);

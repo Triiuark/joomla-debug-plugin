@@ -7,10 +7,11 @@
 	<license>GNU General Public License version 3 or later; see LICENSE</license>
 	<authorEmail>triiuark@projekt182.de</authorEmail>
 	<authorUrl>github.com/Triiuark</authorUrl>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<description>PLG_TRIDEBUG_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="tridebug">tridebug.php</filename>
+		<filename>debug.php</filename>
 	</files>
 	<languages>
 		<language tag="en-GB">en-GB.plg_system_tridebug.ini</language>
