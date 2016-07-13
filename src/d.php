@@ -8,15 +8,15 @@ class D
 {
 	private static $instance = null;
 
-	private $enabled;
-	private $level;           // E_ALL  - error level to display
-	private $printSuppressed; // false - do not print suppressed errors
-	private $printTraces;     // true   - print traces
-	private $settings;        // object - to store original errror handling settings
-	private $oneTmpFile;      // false  - keep all other requests in one file or in a file for each client
-	private $path;            // ''     - path to strip from file names
-	private $errors;
-	private $dumps;
+	private $enabled         = true;
+	private $level           = E_ALL; // error level to display
+	private $printSuppressed = false; // do not print suppressed errors
+	private $printTraces     = true;  //  print traces
+	private $oneTmpFile      = false; // keep all other requests in one file or in a file for each client
+	private $path            = '';    // path to strip from file names
+	private $settings        = null;  // object - to store original errror handling settings
+	private $errors          = [];
+	private $dumps           = [];
 
 	public static function getInstance(\stdClass $options = null)
 	{
@@ -55,6 +55,13 @@ class D
 		}
 
 		return 'UNKNOWN';
+	}
+
+	public static function getEnableFile()
+	{
+		$file = sys_get_temp_dir().DIRECTORY_SEPARATOR
+				.'triiuark_debug'.str_replace(['/', '\\'], '_', __DIR__);
+		return $file;
 	}
 
 	public function dump($mixed = null, $dump = false, $trace = true)
@@ -324,8 +331,7 @@ class D
 
 	private function __construct(\stdClass $options = null)
 	{
-		$file = sys_get_temp_dir().DIRECTORY_SEPARATOR
-				.'triiuark_debug'.str_replace(['/', '\\'], '_', __DIR__);
+		$file = self::getEnableFile();
 
 		if (is_file($file))
 		{
@@ -350,24 +356,28 @@ class D
 			return;
 		}
 
-		$this->path = '';
-
 		if ($options)
 		{
 			if (property_exists($options, 'path') && is_dir($options->path))
 			{
 				$this->path = $options->path;
 			}
+
+			$boolOpts = ['oneTmpFile', 'printSuppressed', 'printTraces'];
+			foreach ($boolOpts as $opt)
+			{
+				if (property_exists($options, $opt))
+				{
+					$this->{$opt} = (bool)$options->{$opt};
+				}
+			}
+			if (property_exists($options, 'level'))
+			{
+				$this->level = (int)$options->level;
+			}
 		}
 
-		$this->settings        = new \stdClass;
-		$this->oneTmpFile      = false;
-		$this->printSuppressed = false;
-		$this->printTraces     = true;
-		$this->level           = E_ALL;
-		$this->errors          = [];
-		$this->dumps           = [];
-
+		$this->settings                 = new \stdClass;
 		$this->settings->display_errors = ini_set('display_errors', '1');
 		$this->settings->level          = error_reporting($this->level);
 		$this->settings->handler        = set_error_handler([$this, 'handler']);

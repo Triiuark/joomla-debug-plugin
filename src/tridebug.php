@@ -1,6 +1,6 @@
 <?php defined('_JEXEC') or die;
 
-require_once 'debug.php';
+require_once 'd.php';
 
 class PlgSystemTriDebug extends JPlugin
 {
@@ -8,15 +8,22 @@ class PlgSystemTriDebug extends JPlugin
 
 	public function __construct(&$subject, $config)
 	{
-		$this->debug = \Triiuark\D::getInstance((object) ['path' => JPATH_BASE]);
+		parent::__construct($subject, $config);
 
-		if (array_key_exists('triiuarkDebugLogJoomla', $_REQUEST) && $_REQUEST['triiuarkDebugLogJoomla'])
+		$params = (object) [
+			'path'            => JPATH_BASE,
+			'level'           => E_ALL,
+			'printSuppressed' => (bool)$this->params->get('printSuppressed', false),
+			'printTraces'     => (bool)$this->params->get('printTraces', true),
+			'oneTmpFile'      => (bool)$this->params->get('oneTmpFile', false)
+		];
+		$this->debug = \Triiuark\D::getInstance($params);
+
+		if ($this->params->get('printJoomla', false))
 		{
 			$options = ['logger' => 'callback', 'callback' => [$this, 'handler']];
 			JLog::addLogger($options);
 		}
-
-		parent::__construct($subject, $config);
 	}
 
 	public function handler($arg)

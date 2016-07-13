@@ -7,11 +7,12 @@
 	<license>GNU General Public License version 3 or later; see LICENSE</license>
 	<authorEmail>triiuark@projekt182.de</authorEmail>
 	<authorUrl>github.com/Triiuark</authorUrl>
-	<version>0.2.0</version>
-	<description>PLG_TRIDEBUG_XML_DESCRIPTION</description>
+	<version>0.3.0</version>
+	<description>plg_system_tridebug_xml_desc</description>
 	<files>
 		<filename plugin="tridebug">tridebug.php</filename>
-		<filename>debug.php</filename>
+		<filename>d.php</filename>
+		<folder>fields</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">en-GB.plg_system_tridebug.ini</language>
@@ -21,7 +22,54 @@
 	</languages>
 	<config>
 		<fields name="params">
-			<fieldset name="basic">
+			<fieldset
+					addfieldpath="/plugins/system/tridebug/fields"
+					name="basic">
+				<field
+						name="printJoomla"
+						type="radio"
+						class="btn-group"
+						default="0"
+						description="plg_system_tridebug_field_print_joomla_desc"
+						label="plg_system_tridebug_field_print_joomla_label">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+						name="printSuppressed"
+						type="radio"
+						class="btn-group"
+						default="0"
+						description="plg_system_tridebug_field_print_suppressed_desc"
+						label="plg_system_tridebug_field_print_suppressed_label">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+						name="printTraces"
+						type="radio"
+						class="btn-group"
+						default="1"
+						description="plg_system_tridebug_field_print_traces_desc"
+						label="plg_system_tridebug_field_print_traces_label">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+						name="oneTmpFile"
+						type="radio"
+						class="btn-group"
+						default="0"
+						description="plg_system_tridebug_field_one_tmp_file_desc"
+						label="plg_system_tridebug_field_one_tmp_file_label">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+						name="enableHint"
+						type="tridebugEnableHint"
+						description="plg_system_tridebug_field_enable_hint_desc"
+						label="plg_system_tridebug_field_enable_hint_label"/>
 			</fieldset>
 		</fields>
 	</config>
