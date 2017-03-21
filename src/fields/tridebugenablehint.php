@@ -10,8 +10,14 @@ class JFormFieldTriDebugEnableHint extends JFormField
 	{
 		parent::__construct($form);
 
-		$this->file = \Triiuark\D::getEnableFile();
-		if (is_file($this->file)) {
+		$this->file = null;
+		if (class_exists('\Triiuark\D'))
+		{
+			$this->file = \Triiuark\D::getEnableFile();
+		}
+
+		if (is_file($this->file))
+		{
 			$this->isEnabled = true;
 		}
 	}
@@ -19,19 +25,27 @@ class JFormFieldTriDebugEnableHint extends JFormField
 	public function getLabel()
 	{
 		$label = 'PLG_SYSTEM_TRIDEBUG_FIELD_ENABLE_HINT_LABEL';
-		if ($this->isEnabled) {
+		if ($this->isEnabled)
+		{
 			$label = 'PLG_SYSTEM_TRIDEBUG_FIELD_DISABLE_HINT_LABEL';
 		}
+
 		return JText::_($label);
 	}
 
 	public function getInput()
 	{
 		$cmd = 'touch '.$this->file;
-		if ($this->isEnabled) {
+		if ($this->isEnabled)
+		{
 			$cmd = 'rm '.$this->file;
 		}
-		$html = '<input type="text" value="'.htmlspecialchars($cmd).'" readonly="readonly"/>';
+
+		$html = JText::_('PLG_SYSTEM_TRIDEBUG_ENABLE_PLUGIN_HINT');
+		if (class_exists('\Triiuark\D'))
+		{
+			$html = '<input type="text" value="'.htmlspecialchars($cmd).'" readonly="readonly"/>';
+		}
 
 		return $html;
 	}
