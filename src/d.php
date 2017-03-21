@@ -96,7 +96,8 @@ class D
 			return;
 		}
 
-		if (!$this->printSuppressed && error_reporting() === 0) {
+		if (!$this->printSuppressed && error_reporting() === 0)
+		{
 			// happens if errors suppressed with @
 			return;
 		}
@@ -126,7 +127,10 @@ class D
 
 		ini_set('display_errors', $this->settings->display_errors);
 		error_reporting($this->settings->level);
-		set_error_handler($this->settings->handler);
+		if ($this->settings->handler)
+		{
+			@set_error_handler($this->settings->handler);
+		}
 
 		$this->enabled = false;
 
@@ -144,20 +148,27 @@ class D
 		$otherRequests = [];
 
 		$tmpDir  = sys_get_temp_dir().'/triiuark_debug/';
-		if (!is_dir($tmpDir)) {
+		if (!is_dir($tmpDir))
+		{
 			mkdir($tmpDir);
 		}
 
-		if (!$this->oneTmpFile) {
+		if (!$this->oneTmpFile
+			&& array_key_exists('REMOTE_ADDR', $_SERVER)
+			&& array_key_exists('HTTP_USER_AGENT', $_SERVER))
+		{
 			$tmpFile = $tmpDir.$_SERVER['REMOTE_ADDR'].'-'.sha1($_SERVER['HTTP_USER_AGENT']).str_replace('/', '_', dirname(__FILE__));
-		} else {
+		}
+		else
+		{
 			$tmpFile = $tmpDir.str_replace('/', '_', dirname(__FILE__));
 		}
 
 		if (is_file($tmpFile))
 		{
 			$otherRequests = file_get_contents($tmpFile);
-			if ($otherRequests) {
+			if ($otherRequests)
+			{
 				$otherRequests = unserialize($otherRequests);
 			}
 
@@ -193,11 +204,13 @@ class D
 					$js[]   = '   console.log(\'PHP END OTHER ERRORS\n--------------------\')';
 				}
 				$html[] = '   <h3>'.$request->uri.' - '.$request->time.'</h3>';
-				if ($request->dumps) {
+				if ($request->dumps)
+				{
 					$html[] = '   <h4>Dumps</h4>';
 					$html[] = $request->dumps;
 				}
-				if ($request->errors) {
+				if ($request->errors)
+				{
 					$html[] = '   <h4>Errors</h4>';
 					$html[] = $request->errors;
 				}
@@ -250,12 +263,16 @@ class D
 		$head = '
 				<script type="text/javascript">
 					var TriiuarkDebug = {
-						toggle: function(element) {
+						toggle: function(element)
+						{
 							var next = element.nextElementSibling;
-							if (getComputedStyle(next, null).getPropertyValue("display") == "none") {
+							if (getComputedStyle(next, null).getPropertyValue("display") == "none")
+							{
 								next.style.display = "block";
 								element.textContent = "Hide";
-							} else {
+							}
+							else
+							{
 								next.style.display = "none";
 								element.textContent = "Show";
 							}
@@ -282,7 +299,8 @@ class D
 		if (strpos( $contents, '</body>') === false)
 		{
 			$fd = fopen($tmpFile, 'w');
-			if ($fd) {
+			if ($fd)
+			{
 				$tmp  = new \stdClass;
 				$post = '';
 
@@ -316,7 +334,8 @@ class D
 		}
 		else
 		{
-			if (is_file($tmpFile)) {
+			if (is_file($tmpFile))
+			{
 				unlink($tmpFile);
 			}
 			$contents = str_replace('</head>', "\n".$head."\n</head>", $contents);
